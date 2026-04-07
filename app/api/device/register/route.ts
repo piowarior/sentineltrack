@@ -14,3 +14,14 @@ export async function POST(req: Request) {
 
   return NextResponse.json(device);
 }
+
+export async function GET() {
+
+  const devices = await prisma.device.findMany({
+    include: {
+      logs: true
+    }
+  });
+
+  return NextResponse.json(devices);
+}
