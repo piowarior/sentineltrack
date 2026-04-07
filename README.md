@@ -5,7 +5,7 @@
 
 ---
 
-## Tabel HTTP Status Code yang sering dipakai
+## Tabel HTTP Status Code
 
 | Status Code | Nama                   | Penyebab                                            |
 | ----------- | ---------------------- | --------------------------------------------------- |
