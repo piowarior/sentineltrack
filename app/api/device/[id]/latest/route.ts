@@ -13,10 +13,14 @@ export async function GET(
     logs: {
       orderBy: {
         timestamp: "desc"
-      }
+      },
+      take: 1
     },
-    alerts: true,
-    safeZones: true
+    alerts: {
+      where: {
+        isRead: false
+      }
+    }
   }
   });
 

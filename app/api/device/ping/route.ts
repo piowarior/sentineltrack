@@ -2,18 +2,8 @@ import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
+  const data = await req.json();
 
-  const data = await req.json() as {
-    secret: string;
-    ip: string;
-    city: string;
-    region: string;
-    country: string;
-    latitude: number;
-    longitude: number;
-  };
-
-  // 1. validasi device pakai secret
   const device = await prisma.device.findUnique({
     where: {
       secret: data.secret
@@ -27,18 +17,69 @@ export async function POST(req: Request) {
     );
   }
 
-  // 2. simpan log (PAKAI device.id, BUKAN secret)
+  // simple suspicious detection
+  let suspicious = false;
+  let reason = null;
+
+  if (data.speed && data.speed > 150) {
+    suspicious = true;
+    reason = "Device moving too fast";
+  }
+
   const log = await prisma.deviceLog.create({
     data: {
-      deviceId: device.id,  // ✅ INI YANG BENAR
-      ip: data.ip,
-      city: data.city,
-      region: data.region,
-      country: data.country,
+      deviceId: device.id,
+      ip: data.ip || "unknown",
+      city: data.city || "unknown",
+      region: data.region || "unknown",
+      country: data.country || "unknown",
       latitude: data.latitude,
-      longitude: data.longitude
+      longitude: data.longitude,
+
+      wifiName: data.wifiName,
+      networkType: data.networkType,
+      battery: data.battery,
+      speed: data.speed,
+
+      isSuspicious: suspicious,
+      reason
     }
   });
 
+  // update latest device state
+  await prisma.device.update({
+    where: {
+      id: device.id
+    },
+    data: {
+      lastLatitude: data.latitude,
+      lastLongitude: data.longitude,
+      lastSeen: new Date(),
+      lastIp: data.ip,
+      lastWifiName: data.wifiName
+    }
+  });
+
+  // create alert if suspicious
+  if (suspicious) {
+    await prisma.alert.create({
+      data: {
+        deviceId: device.id,
+        type: "SUSPICIOUS_MOVEMENT",
+        message: reason || "Unknown suspicious activity"
+      }
+    });
+  }
+
   return NextResponse.json(log);
+}
+
+export async function GET() {
+  const logs = await prisma.deviceLog.findMany({
+    orderBy: {
+      timestamp: "desc"
+    }
+  });
+
+  return NextResponse.json(logs);
 }

@@ -3,36 +3,117 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "mysql"
   url      = env("DATABASE_URL")
 }
 
 model User {
-  id       String @id @default(cuid())
-  email    String @unique
+  id       String   @id @default(cuid())
+  email    String   @unique
   password String
+
   devices  Device[]
 }
 
 model Device {
-  id        String @id @default(cuid())
-  name      String
-  secret    String @unique
-  userId    String
-  user      User   @relation(fields: [userId], references: [id])
-  logs      DeviceLog[]
+  id           String   @id @default(cuid())
+  name         String
+  secret       String   @unique
+
+  userId       String
+  user         User     @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt @default(now())
+
+  isActive     Boolean  @default(true)
+
+  logs         DeviceLog[]
+
+  safeZones    SafeZone[]
+  alerts       Alert[]
+
+  // lokasi normal
+  homeLatitude  Float?
+  homeLongitude Float?
+
+  // status terakhir
+  lastLatitude  Float?
+  lastLongitude Float?
+  lastSeen      DateTime?
+
+  // network terakhir
+  lastWifiName  String?
+  lastIp        String?
 }
 
 model DeviceLog {
-  id        String   @id @default(cuid())
-  deviceId  String
-  ip        String
-  city      String
-  region    String
-  country   String
-  latitude  Float
-  longitude Float
-  timestamp DateTime @default(now())
+  id          String   @id @default(cuid())
 
-  device Device @relation(fields: [deviceId], references: [id])
+  deviceId    String
+  device      Device   @relation(fields: [deviceId], references: [id])
+
+  ip          String
+  city        String
+  region      String
+  country     String
+
+  latitude    Float
+  longitude   Float
+
+  wifiName    String?
+  networkType String?
+
+  battery     Int?
+
+  speed       Float?
+
+  isSuspicious Boolean @default(false)
+
+  reason      String?
+
+  timestamp   DateTime @default(now())
+}
+
+model SafeZone {
+  id          String   @id @default(cuid())
+
+  deviceId    String
+  device      Device   @relation(fields: [deviceId], references: [id])
+
+  name        String
+
+  latitude    Float
+  longitude   Float
+
+  radius      Float
+
+  createdAt   DateTime @default(now())
+}
+
+model DeviceRelation {
+  id            String   @id @default(cuid())
+
+  primaryId     String
+  secondaryId   String
+
+  lastDistance  Float?
+
+  isSeparated   Boolean @default(false)
+
+  updatedAt     DateTime @updatedAt
+}
+
+model Alert {
+  id          String   @id @default(cuid())
+
+  deviceId    String
+  device      Device   @relation(fields: [deviceId], references: [id])
+
+  type        String
+  message     String
+
+  createdAt   DateTime @default(now())
+
+  isRead      Boolean @default(false)
 }
