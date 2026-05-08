@@ -6,4 +6,39 @@
       #0C2644 100%
     );
   }
+  
+}
+
+@keyframes marquee {
+  0% {
+    transform: translateX(0%);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  animation: marquee 30s linear infinite;
+}
+
+@layer utilities {
+  .mask-fade {
+    mask-image: linear-gradient(
+      to right,
+      transparent,
+      black 15%,
+      black 85%,
+      transparent
+    );
+
+    -webkit-mask-image: linear-gradient(
+      to right,
+      transparent,
+      black 15%,
+      black 85%,
+      transparent
+    );
+  }
 }
