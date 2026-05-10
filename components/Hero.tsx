@@ -9,6 +9,7 @@ const Hero = () => {
 
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [show, setShow] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -25,7 +26,25 @@ const Hero = () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
-  
+
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setShow(true);
+        }
+      },
+      { threshold: 0.2 }
+    );
+
+    const element = document.querySelector(".fade-left");
+
+    if (element) observer.observe(element);
+
+    return () => observer.disconnect();
+  }, []);
+    
   return (
    <section className="bg-header-gradient w-full h-screen ">
      <nav className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${scrolled ? "bg-[#1F1F1F]/30 backdrop-blur-md py-5 " : "bg-transparent py-17 max-lg:py-10"}`}>
@@ -70,8 +89,8 @@ const Hero = () => {
 
     <div className=" flex items-center justify-between container mx-auto px-[50px] pt-73 max-lg:px-3 max-lg:pt-[232px]">
       <div className="w-[750px] z-10 max-lg:flex max-lg:flex-col max-lg:justify-center max-lg:items-center max-lg:text-center max-lg:w-full">
-        <h1 className="text-6xl leading-17.5 font-semibold text-white max-lg:text-[45px] max-md:text-3xl max-lg:leading-10">Pantau Perangkat Anda Secara Real-Time</h1>
-        <p className="text-base mt-12.5 text-white max-lg:text-[13px] max-lg:mt-5 ">Sistem monitoring perangkat otomatis yang mengirimkan data lokasi akurat setiap menit langsung ke layar Anda hanya dengan menghubungkan perangkat dan melihat semua informasi penting secara otomatis di dalam dashboard.</p>
+        <h1 className={` fade-left ${show ? "show" : ""} text-6xl leading-17.5 font-semibold text-white max-lg:text-[45px] max-md:text-3xl max-lg:leading-10`}>Pantau Perangkat Anda Secara Real-Time</h1>
+        <p className="text-base animate-fade-left mt-12.5 text-white max-lg:text-[13px] max-lg:mt-5 ">Sistem monitoring perangkat otomatis yang mengirimkan data lokasi akurat setiap menit langsung ke layar Anda hanya dengan menghubungkan perangkat dan melihat semua informasi penting secara otomatis di dalam dashboard.</p>
         <div className="mt-12.5 flex gap-8.5 max-lg:gap-6 ">
           <button className="w-51 bg-[#3AC081] py-3 rounded-full text-white border border-white max-lg:w-34.5 max-lg:py-2 max-lg:text-[10px] hover:bg-[#2b9765] transition-all">Masuk Sekarang</button>
           <button className="w-51 bg-white py-3 rounded-full text-black border border-black max-lg:w-34.5 max-lg:py-2 max-lg:text-[10px] hover:bg-[#b4b4b4] transition-all ">Pelajari Lebih Lanjut</button>

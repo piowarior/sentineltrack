@@ -10,9 +10,9 @@ const About = () => {
 
         </div>
       </div>
-      <div className="">
-        <div className="">
-          <h2>Sentinel <span>Track</span></h2>
+      <div className="container mx-auto px-[50px] flex mt-28">
+        <div className="w-[50%] flex flex-col justify-center">
+          <h2 className='text-5xl leading-17.5 font-semibold text-white max-lg:text-[45px] max-md:text-3xl max-lg:leading-10'>Sentinel <span className='font-thin'>Track</span></h2>
           <p>SentinelTrack adalah platform pemantauan perangkat berbasis web yang dirancang untuk membantu pengguna melacak posisi dan status aset digital mereka secara langsung dari satu pintu.</p>
           <div className="">
             <ul>
@@ -24,7 +24,7 @@ const About = () => {
           </div>
         </div>
         <div className="">
-          <img src="/picture/picture-maps1.png" alt="" />
+          <img className=" w-[664px] h-[500px] object-cover rounded-[50px] border border-white  " src="/picture/picture-maps1.png" alt="" />
         </div>
       </div>
     </section>
