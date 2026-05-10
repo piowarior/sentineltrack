@@ -1,9 +1,9 @@
 @layer utilities {
   .bg-header-gradient {
     background: radial-gradient(
-      circle at center,
+      ellipse at center ,
       #133559 0%,
-      #0C2644 100%
+      #0C2644 60%
     );
   }
   
@@ -15,7 +15,7 @@
   }
 
   100% {
-    transform: translateX(-50%);
+    transform: translateX(calc(-100%/2));
   }
 }
 
