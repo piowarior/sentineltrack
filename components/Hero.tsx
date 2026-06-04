@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import "@/style/global.css";
+import { gsap } from "gsap";
 
 
 
